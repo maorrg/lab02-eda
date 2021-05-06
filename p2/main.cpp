@@ -1,42 +1,35 @@
 #include <iostream>
-#include <list>
-#include <thread>
-#include <mutex>
+#include <pthread.h>
+#include "nstack.h"     // use Stack
+#include "tester/tester.h"
 
-using namespace std;
-using stack = list<string>;
+#define N_THREADS 6
 
-stack stk;
-//mutex mtx;
+int main(){
+    cout << "\n========= BASIC PROGRAM =========\n\n";
 
-void stk_push(string s) {
-    //mtx.lock();
-    stk.push_front(s);
-    //mtx.unlock();
-}
+    pthread_t th_children[N_THREADS];
+    char values[N_THREADS];
+    int i;
 
-void stk_pop() {
-    //mtx.lock();
-    stk.pop_front();
-    //mtx.unlock();
-}
+    for (i=0; i<N_THREADS; i++){
+        values[i] = i % 2 ? 'A' : 'B';
+        pthread_create(&th_children[i], NULL, Stack::push, (void *)&values[i]);
+    }
 
-int main() {
-    //thread threads[10];
-    
-    //for (int i=0; i<10; ++i) threads[i] = thread(stk_pop,i+1);
+    for (i=0; i<N_THREADS; i++){
+        pthread_join(th_children[i], NULL);
+    }
 
-    //for (auto& th : threads) th.join();
-
-    stk.push_front("A");
-    stk.push_front("B");
-    stk.push_front("C");
-    stk.push_front("A");
-    while (!stk.empty()){
-        cout << stk.front() << endl;
-        stk.pop_front();
+    cout << "Stack size: " << Stack::size() << "\nStack items: ";
+    while (!Stack::empty()){
+        cout << Stack::top() << " ";
+        Stack::pop(nullptr);
     }
     
+    cout << "\n\n========= END PROGRAM =========\n\n";
+
+    Tester::execute();
 
     return 0;
 }
