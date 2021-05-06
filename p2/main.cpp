@@ -1,7 +1,6 @@
 #include <iostream>
 #include <pthread.h>
 #include "nstack.h"     // use Stack
-#include "tester/tester.h"
 
 #define N_THREADS 6
 
@@ -28,8 +27,6 @@ int main(){
     }
     
     cout << "\n\n========= END PROGRAM =========\n\n";
-
-    Tester::execute();
 
     return 0;
 }
